@@ -94,7 +94,11 @@ class HDDRMemory:
             Index of the new cell.
         """
         if vector.shape != (self.dim,):
-            raise ValueError(f"Expected vector of shape ({self.dim},), got {vector.shape}")
+            raise ValueError(
+                f"HDDRMemory.write: expected vector of shape ({self.dim},), "
+                f"got {vector.shape}. Check that your embedding dimension matches "
+                f"the 'dim' parameter used to construct this HDDRMemory."
+            )
 
         # Sparse encoding: keep top-k dimensions
         sparse_vec = self._sparse_encode(vector)

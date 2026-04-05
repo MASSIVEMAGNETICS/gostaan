@@ -69,7 +69,7 @@ class Gostaan:
         episodic_capacity: int = 2048,
         hddr_capacity: int = 1024,
         rem_idle_threshold: float = 30.0,
-        seed: Optional[int] = 42,
+        seed: Optional[int] = None,
     ) -> None:
         """
         Args:

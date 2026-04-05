@@ -211,7 +211,7 @@ class IdentityAnchor:
             for phrase in self._TRIGGER_PHRASES:
                 phrase_words = phrase.split()
                 n = len(phrase_words)
-                if words[i : i + n] == phrase_words and i + n < len(words):
+                if words[i : i + n] == phrase_words and i + n <= len(words):
                     # Take the next 1-3 words as the trait
                     trait_words = []
                     for offset in range(1, 4):

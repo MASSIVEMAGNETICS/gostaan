@@ -22,6 +22,8 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
+_CONSOLIDATION_SEPARATOR = " [+] "  # Marker between merged episode contents
+
 
 @dataclass
 class Episode:
@@ -111,7 +113,11 @@ class EpisodicMemory:
             episode_id of the new episode.
         """
         if embedding.shape != (self.dim,):
-            raise ValueError(f"Expected embedding of shape ({self.dim},)")
+            raise ValueError(
+                f"EpisodicMemory.store: expected embedding of shape ({self.dim},), "
+                f"got {embedding.shape}. Check that your embedding dimension matches "
+                f"the 'dim' parameter used to construct this EpisodicMemory."
+            )
 
         episode_id = str(uuid.uuid4())
         episode = Episode(
@@ -243,7 +249,7 @@ class EpisodicMemory:
                     )
                     surviving.content = (
                         surviving.content
-                        + " [+] "
+                        + _CONSOLIDATION_SEPARATOR
                         + episodes[i].content
                     )
                     surviving.embedding = self._normalize(

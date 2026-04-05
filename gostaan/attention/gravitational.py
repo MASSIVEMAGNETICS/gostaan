@@ -18,6 +18,9 @@ import numpy as np
 from typing import Optional, Tuple
 
 
+_MIN_MASS: float = 0.01  # Minimum token mass to prevent gravitational singularities
+
+
 class GravitationalAttention:
     """
     Gravitational Attention layer.
@@ -174,7 +177,7 @@ class GravitationalAttention:
                 x_b = X[b]
                 pos = x_b @ self.W_position[h]
                 raw_mass = (x_b @ self.W_mass[h]).squeeze(-1)
-                masses = self._softplus(raw_mass) + 0.01
+                masses = self._softplus(raw_mass) + _MIN_MASS
                 values = x_b @ self.W_value[h]
                 force = self._compute_force_matrix(pos, masses)
                 attn = self._softmax(force)

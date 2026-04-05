@@ -205,7 +205,7 @@ class SensoryProcessor:
         tokens = text.lower().split()
         bow = np.zeros(512, dtype=np.float64)
         for token in tokens:
-            h = int(hashlib.md5(token.encode()).hexdigest(), 16) % 512
+            h = int(hashlib.sha256(token.encode()).hexdigest(), 16) % 512
             bow[h] += 1.0
 
         # TF normalisation
