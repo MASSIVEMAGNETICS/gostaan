@@ -1,0 +1,20 @@
+{
+  "name": "@massivemagnetics/gostaan-event-client",
+  "version": "1.0.0",
+  "description": "TypeScript event client for the MASSIVEMAGNETICS multi-system platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "demo": "ts-node examples/demo.ts",
+    "test": "node --test dist/tests/schema.test.js"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0"
+  }
+}
