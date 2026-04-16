@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PlatformEvent",
+  "description": "Canonical inter-system event schema for the MASSIVEMAGNETICS multi-system platform.",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["id", "version", "type", "source", "timestamp", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique event identifier (UUID v4)."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Schema version in semver format (e.g. \"1.0.0\")."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "perceive",
+        "recall",
+        "sleep",
+        "imagine",
+        "synthesise",
+        "result",
+        "error",
+        "heartbeat"
+      ],
+      "description": "Canonical event type."
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of the originating system (e.g. \"gostaan\", \"conscious-river\")."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of when the event was created."
+    },
+    "payload": {
+      "type": "object",
+      "description": "Event-specific data. Schema depends on 'type' — see per-type payload definitions below.",
+      "oneOf": [
+        {
+          "title": "perceive payload",
+          "description": "Ingest a new experience into Gostaan.",
+          "properties": {
+            "data": { "description": "Raw input: text string, JSON object, or numeric array." },
+            "importance": { "type": "number", "minimum": 0, "maximum": 10, "description": "Initial importance weight." },
+            "emotional_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+            "tags": { "type": "array", "items": { "type": "string" } },
+            "context": { "type": "object" }
+          }
+        },
+        {
+          "title": "recall payload",
+          "description": "Retrieve relevant memories from Gostaan.",
+          "properties": {
+            "query": { "type": "string", "description": "Free-text query." },
+            "top_k": { "type": "integer", "minimum": 1, "maximum": 100 },
+            "tags": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        {
+          "title": "sleep payload",
+          "description": "Trigger a REM consolidation cycle. No fields required.",
+          "properties": {}
+        },
+        {
+          "title": "imagine payload",
+          "description": "Generate novel ideas from memory.",
+          "properties": {
+            "seed": { "type": "string", "description": "Seed concept." },
+            "top_k": { "type": "integer", "minimum": 1 }
+          }
+        },
+        {
+          "title": "synthesise payload",
+          "description": "Blend two or more concepts into a novel embedding.",
+          "properties": {
+            "concepts": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 2,
+              "description": "Concepts to blend (at least 2 required)."
+            }
+          }
+        },
+        {
+          "title": "result payload",
+          "description": "Successful response from Gostaan. Shape varies by trigger type.",
+          "properties": {}
+        },
+        {
+          "title": "error payload",
+          "description": "Error/exception notification.",
+          "properties": {
+            "detail": { "type": "string", "description": "Human-readable error message." }
+          }
+        },
+        {
+          "title": "heartbeat payload",
+          "description": "Keep-alive / status ping. No fields required.",
+          "properties": {}
+        }
+      ]
+    },
+    "trace_id": {
+      "type": ["string", "null"],
+      "description": "Optional correlation ID linking a request event to its response."
+    }
+  }
+}

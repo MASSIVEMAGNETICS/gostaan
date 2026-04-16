@@ -88,6 +88,72 @@ When idle, the system enters a REM cycle that:
 4. Prunes stale low-importance memories
 5. Compresses HDDR store to capacity
 
+## Multi-System Integration
+
+Gostaan includes a lightweight HTTP event bus that lets it communicate with
+the other MASSIVEMAGNETICS systems:
+**conscious-river**, **Defensive-Cognitive-Runtime**, **agi_council**, and
+**complete-active-aware-repo-intelligence**.
+
+All inter-system messages use a single canonical `PlatformEvent` schema
+(see `integration/schema/event_schema.json`).
+
+### Quick start
+
+```bash
+# Start the Gostaan event server (port 7700)
+python examples/integration_demo.py
+
+# Send a perceive event from any system (curl, Python, TypeScript…)
+curl -X POST http://127.0.0.1:7700/events \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "demo-1", "version": "1.0.0", "type": "perceive",
+    "source": "my-system", "timestamp": "2026-01-01T00:00:00Z",
+    "payload": {"data": "Hello from another system!", "importance": 0.9}
+  }'
+```
+
+### Python peer adapter
+
+```python
+from gostaan.integration import EventClient
+
+client = EventClient(
+    base_url="http://gostaan-host:7700",
+    auth_token="shared-secret",
+    source="conscious-river",
+)
+result = client.emit("perceive", {"data": "Sensory spike detected."})
+print(result.payload["episode_id"])
+```
+
+### TypeScript peer adapter (Node.js ≥ 18, no extra deps)
+
+```typescript
+import { EventClient } from "@massivemagnetics/gostaan-event-client";
+
+const client = new EventClient({
+  baseUrl: "http://gostaan-host:7700",
+  authToken: process.env.GOSTAAN_TOKEN,
+  source: "agi_council",
+});
+const result = await client.emit("recall", { query: "recent decisions", top_k: 5 });
+console.log(result?.payload?.memories);
+```
+
+### Run the TypeScript demo
+
+```bash
+cd integration/ts_client
+npm install
+npx ts-node examples/demo.ts
+```
+
+See **[docs/integration.md](docs/integration.md)** for the full schema reference,
+security configuration (auth tokens, origin allowlist, rate limiting), and
+architecture diagram.
+
 ## Installation
 
 ```bash
@@ -97,7 +163,11 @@ pip install -r requirements.txt
 ## Tests
 
 ```bash
+# All tests (120 total)
 pytest tests/ -v
+
+# Integration-only
+pytest tests/test_integration_schema.py tests/test_integration_server.py -v
 ```
 
 ## License
